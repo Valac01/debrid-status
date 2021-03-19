@@ -34,7 +34,7 @@ const RealDebrid = () => {
       <h1 className="text-2xl text-gray-600">All Debrid : Hosting status</h1>
       { 
         hostsData.map(host => {
-          return <p>{host}</p>
+          return <p key={host}>{host}</p>
         })
       }
     </div>

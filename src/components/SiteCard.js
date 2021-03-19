@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import PropTypes from 'prop-types'
 
 const SiteCard = ({name, to}) => {
   return (
@@ -11,6 +12,11 @@ const SiteCard = ({name, to}) => {
       </div>
     </Link>
   );
+}
+
+SiteCard.propTypes = {
+  name: PropTypes.string.isRequired,
+  to: PropTypes.string.isRequired
 }
 
 export default SiteCard;
