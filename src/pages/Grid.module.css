@@ -1,0 +1,12 @@
+.grid {
+  @apply pt-4 px-2;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+}
+
+@screen sm {
+  .grid {
+    @apply px-0;
+  }
+}

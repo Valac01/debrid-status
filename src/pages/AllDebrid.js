@@ -1,44 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import Host from '../components/Host'
+import GridStyles from './Grid.module.css'
 
 const RealDebrid = () => {
-  const [hostsData, setHostsData] = useState([])
-  
+  const [hostsData, setHostsData] = useState({})
   useEffect(() => {
-    console.log('Use effect')
-    const fetchData = async() => {
-      try {
-        const res = await fetch('https://api.alldebrid.com/v4/hosts?' + 
-        new URLSearchParams({agent: 'DebridStatus', user: 'Apple'}), {
-          method: 'GET',
-        })
-        if(!res.ok) {
-          throw Error
-        }
-        console.log(res)
-        const data = await res.json()
-        console.log(data.data)
-        
-        setHostsData(Object.keys(data.data.hosts))
-        console.log(hostsData)
+    const cancelToken = axios.CancelToken
+    const source = cancelToken.source()
+    axios
+      .get('https://api.alldebrid.com/v4/hosts', {
+        params: {
+          agent: 'debrid-status',
+        },
+        cancelToken: source.token,
+      })
+      .then((res) => {
+        console.log(res.data.data.hosts)
+        setHostsData(res.data.data.hosts)
+      })
 
-      } catch (error) {
-        console.log(error)
-      }
+    return () => {
+      source.cancel
     }
-
-    fetchData()
   }, [])
-  
+
   return (
     <div className="container px-2 sm:px-0 pt-4">
       <h1 className="text-2xl text-gray-600">All Debrid : Hosting status</h1>
-      { 
-        hostsData.map(host => {
-          return <p key={host}>{host}</p>
-        })
-      }
+      <div className={GridStyles.grid}>
+        {Object.keys(hostsData).map((host) => {
+          return <Host key={host} host={hostsData[host]} />
+        })}
+      </div>
     </div>
-  );
+  )
 }
- 
-export default RealDebrid;
+
+export default RealDebrid
