@@ -1,13 +1,18 @@
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 
-const Host = ({ host }) => {
-  const { name, status, type } = host
+const Host = ({ host, status }) => {
+  const { name, type, image } = host;
   return (
     <div
-      className={`site-card px-4 py-4 shadow-sm hover:shadow-md rounded-md relative ${
-        status ? 'bg-green-50' : 'bg-red-50'
+      className={`site-card flex items-center px-4 py-4 shadow-sm hover:shadow-md rounded-md relative ${
+        status ? "bg-green-50" : "bg-red-50"
       }`}
     >
+      {image && (
+        <div className="p-1 bg-white rounded-full mr-2 shadow-sm mb-1">
+          <img src={image} className="h-5" alt={name} />
+        </div>
+      )}
       <div>
         <h2 className="text-gray-600 text-xl font-medium tracking-wider uppercase mb-2">
           {name}
@@ -16,7 +21,7 @@ const Host = ({ host }) => {
       </div>
       <div
         className={`absolute top-0 right-0 m-2 rounded-full p-2 ${
-          status ? 'bg-green-400' : 'bg-red-400'
+          status ? "bg-green-400" : "bg-red-400"
         }`}
       >
         {status ? (
@@ -38,15 +43,16 @@ const Host = ({ host }) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 Host.propTypes = {
   host: PropTypes.shape({
     name: PropTypes.string,
-    status: PropTypes.bool,
     type: PropTypes.string,
+    image: PropTypes.string,
   }),
-}
+  status: PropTypes.bool,
+};
 
-export default Host
+export default Host;

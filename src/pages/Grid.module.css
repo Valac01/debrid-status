@@ -2,7 +2,7 @@
   @apply pt-4 px-2;
   display: grid;
   gap: 1.25rem;
-  grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+  grid-template-columns: repeat(auto-fit, minmax(260px, auto));
 }
 
 @screen sm {
