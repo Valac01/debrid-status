@@ -7,27 +7,31 @@ import AuthToken from "../components/AuthToken";
 const RealDebrid = () => {
   const [hostsData, setHostsData] = useState({});
   const [localAuth, setLocalAuth] = useState("");
+  const [hostKeys, setHostKeys] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setLocalAuth(localStorage.getItem("auth_token"));
     const cancelToken = axios.CancelToken;
     const source = cancelToken.source();
-    if (localStorage != "") {
-      axios
-        .get("https://api.real-debrid.com/rest/1.0/hosts/status", {
-          params: {
-            auth_token: localAuth,
-          },
-          cancelToken: source.token,
-        })
-        .then((res) => {
-          setHostsData(res.data);
-          console.log(hostsData);
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-    }
+    setError("");
+
+    axios
+      .get("https://api.real-debrid.com/rest/1.0/hosts/status", {
+        params: {
+          auth_token: localAuth,
+        },
+        cancelToken: source.token,
+      })
+      .then((res) => {
+        setHostsData(res.data);
+        setHostKeys(Object.keys(res.data));
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setError(err.message);
+      });
+
     return () => {
       source.cancel;
     };
@@ -50,17 +54,24 @@ const RealDebrid = () => {
         </button>
       </div>
       {localAuth ? (
-        <div className={GridStyles.grid}>
-          {Object.keys(hostsData).map((host) => {
-            let status = true;
-            if (hostsData[host].status === "up") {
-              status = true;
-            } else {
-              status = false;
-            }
-            return <Host key={host} host={hostsData[host]} status={status} />;
-          })}
-        </div>
+        error ? (
+          <div className="text-center text-red-500">
+            <p>{error}</p>
+            <p>You can try refreshing the browser or clear auth token</p>
+          </div>
+        ) : (
+          <div className={GridStyles.grid}>
+            {hostKeys.map((host) => {
+              let status = true;
+              if (hostsData[host].status === "up") {
+                status = true;
+              } else {
+                status = false;
+              }
+              return <Host key={host} host={hostsData[host]} status={status} />;
+            })}
+          </div>
+        )
       ) : (
         <AuthToken setLocalAuth={setLocalAuth} />
       )}
